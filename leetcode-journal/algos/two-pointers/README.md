@@ -8,4 +8,4 @@ Notes and reflections for two pointers problems.
 
 | #   | Title | Link | Difficulty | Status | Attempts | Notes |
 | --- | ----- | ---- | ---------- | ------ | -------- | ----- |
-| —   | *Add problems as you solve them* | | | | | |
+| 2026-01-27 | 2411 | Smallest Subarrays With Maximum Bitwise OR | [LC](https://leetcode.com/problems/smallest-subarrays-with-maximum-bitwise-or/) | Medium | ✅ | 1 | bit-freq window; see [bit-manipulation](../bit-manipulation/README.md) |

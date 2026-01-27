@@ -9,3 +9,4 @@ Quick index by **algorithm/pattern**. Each link goes to a table of questions and
 | Binary Search | [binary-search](algos/binary-search/README.md) |
 | BFS / DFS | [bfs-dfs](algos/bfs-dfs/README.md) |
 | Dynamic Programming | [dp](algos/dp/README.md) |
+| Bit Manipulation | [bit-manipulation](algos/bit-manipulation/README.md) |
