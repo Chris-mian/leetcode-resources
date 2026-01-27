@@ -1,0 +1,18 @@
+# Compiled files
+*.class
+*.pyc
+__pycache__/
+
+# IDE
+.idea/
+.vscode/
+*.iml
+
+# OS
+.DS_Store
+
+# Dependencies
+lib/*.jar
+
+# Environment
+.env
