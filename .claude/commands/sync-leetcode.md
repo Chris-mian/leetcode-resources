@@ -71,15 +71,51 @@ Create `problems/{number}-{slug}/README.md` with:
 {key_learnings or "N/A"}
 ```
 
-### 4. Git Commit and Push
+### 4. Update LeetCode Journal
+
+For each topic in the problem's topics list, update `leetcode-journal/algos/{topic}/README.md`:
+
+1. **If the topic directory doesn't exist**, create it with a new `README.md` following this template:
+   ```markdown
+   # {Topic Name}
+
+   Notes and reflections for {topic} problems.
+
+   ---
+
+   ## Problems
+
+   | Date       | #    | Title | Link | Difficulty | Status | Attempts | Notes |
+   | ---------- | ---- | ----- | ---- | ---------- | ------ | -------- | ----- |
+   | {date} | {number} | {name} | [LC]({url}) | {difficulty} | ✅ | {attempts} | see reflections below |
+
+   ---
+
+   ## Reflections
+
+   - **{number} — {name}**: {key_learnings}
+
+   ### Interview style notes
+
+   {analysis of code structure improvements for interview readability}
+   ```
+   Also add an entry to `leetcode-journal/README.md` index table.
+
+2. **If the topic directory exists**, append a row to the Problems table and add a reflection entry. For secondary topics, add a row with a cross-reference to the primary topic's journal.
+
+**Key learnings formatting rules:**
+- Always rephrase the user's raw notes for better context and readability — be concise yet insightful.
+- Always include an "Interview style notes" section analyzing how the code structure could be improved for interview coding expectations (naming, helper function usage, loop structure, etc.).
+
+### 5. Git Commit and Push
 
 ```
-git add problems/{number}-{slug}/
+git add problems/{number}-{slug}/ leetcode-journal/
 git commit -m "Add solution: {number} - {name} ({difficulty})"
 git push origin HEAD
 ```
 
-### 5. Update Notion Database
+### 6. Update Notion Database
 
 Use the Notion MCP `notion-create-pages` tool to add an entry to the "LeetCode Interview Prep Tracker" database.
 
@@ -103,7 +139,7 @@ Create a page with these properties:
 - `Key Learnings`: "{key_learnings}" if provided
 - `Need Review`: "__NO__" (or "__YES__" if confidence <= 2)
 
-### 6. Confirm
+### 7. Confirm
 
 Show the user a summary:
 - File created: `problems/{number}-{slug}/solution.py`
