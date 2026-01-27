@@ -95,6 +95,14 @@ For each topic in the problem's topics list, update `leetcode-journal/algos/{top
 
    - **{number} — {name}**: {key_learnings}
 
+   ### {number} — Submission
+
+   ```python
+   {user's solution code}
+   ```
+
+   ---
+
    ### Interview style notes
 
    {analysis of code structure improvements for interview readability}
