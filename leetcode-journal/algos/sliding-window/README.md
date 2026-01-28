@@ -9,6 +9,7 @@ Notes and reflections for sliding window problems.
 | #   | Title       | Link | Difficulty | Status | Attempts | Notes        |
 | --- | ----------- | ---- | ---------- | ------ | -------- | ------------ |
 | 837 | New 21 Game | [LC](https://leetcode.com/problems/new-21-game/) | Medium | ✅ | — | optimization: see below |
+| 2106 | Maximum Fruits Harvested After at Most K Steps | [LC](https://leetcode.com/problems/maximum-fruits-harvested-after-at-most-k-steps/) | Hard | ✅ | 1 | see below |
 
 Problem list (sliding-window): [link](https://leetcode.com/problems/new-21-game/?envType=problem-list-v2&envId=sliding-window&roomId=ZdmwPu)
 
@@ -67,3 +68,84 @@ class Solution:
 | **Naming** | `ptargetSum` → e.g. `probFromPrev` or `probReach`; `drawNumber` = value of the card drawn. |
 | **Problem label** | It’s DP; the “sliding window” part is the optimization on the recurrence. Saying that shows you see both the DP and the window. |
 | **Array size** | `M` has length `k + maxPts`; valid indices `0..k+maxPts-1`. You early-return when `n >= k+maxPts-1`, so `M[k:n+1]` never goes out of bounds. |
+
+---
+
+## 2106 — Maximum Fruits Harvested After at Most K Steps
+
+### Reflections
+
+- Sliding window over the sorted fruit array indices (not raw positions). For each left boundary, expand right as far as reachable within `k` steps using the turn-once cost formula: `min(2 * leftDist + rightDist, 2 * rightDist + leftDist)`. Both pointers only advance, so total work is O(n).
+
+### 2106 — Submission
+
+```python
+class Solution:
+    def maxTotalFruits(self, fruits: List[List[int]], startPos: int, k: int) -> int:
+        # it only makes sense to turn direction once. if farthest reach is x steps to L and y steps to rigt,
+        # then choose the min(x,y) to go first as the final will be 2x + y steps.
+        # I can compute with each window, what's the max result i can get with it as leftmost position. O(max(pos)) this is infinite.
+        # to improve time complexity, we can only look at positions where fruits are available.
+
+        # As I was thinking about this last night, my problem with previous apoproach is that there is no O(1) access
+        # but we actually, just need to loop through left to right, giving us sorted. For each one, consider it as the leftmost point, then decide what's the rightmost point we can reach.
+        # Still, although this is very intuitive based on the data structure, this does not give us O(1) access as well. If we calculated the rightmost point we can reach, but there is no way for us to know at that point what's the total number of strawberries we can get with all of one time complexity.
+        # So instead, we should look at the first one on the left. Then with o of n find its rightmost point. Then after each iteration, we move the left one to the next one. We know the rightmost one cannot be any more towards the left; it will be definitely more towards the right. That way, every check is O(1) on ave
+
+        # lowerBound = fruits[0][0] #inclusive
+        # upperBound = fruits[0][0] # inclusive
+        lowerBound = 0 #inclusive
+        upperBound = 0 # inclusive
+        curFruitCount = 0
+        maxFruitCount = 0
+        while lowerBound < len(fruits):
+            # cur min pos
+            pos, fruitNum = fruits[lowerBound]
+            if lowerBound > 0:
+                curFruitCount -= fruits[lowerBound-1][1]
+            # cur max pos, should start from prev
+
+            while upperBound < len(fruits) and self.lessThanKSteps(fruits[lowerBound][0], fruits[upperBound][0], k, startPos):
+                curFruitCount += fruits[upperBound][1]
+                upperBound += 1
+            maxFruitCount = max(maxFruitCount, curFruitCount)
+            lowerBound += 1
+        return maxFruitCount
+
+
+    def lessThanKSteps(self, left, right, k, cur):
+        if left >= cur:
+            return (right - cur) <= k
+        if right <= cur:
+            return (cur - left) <= k
+        else:
+            return min((cur-left) * 2 + (right-cur), (right-cur)*2 + (cur-left)) <= k
+```
+
+---
+
+### 2106 — Thought process review
+
+The inline comments reveal a clear multi-stage reasoning process:
+
+- `# it only makes sense to turn direction once. if farthest reach is x steps to L and y steps to rigt, then choose the min(x,y) to go first as the final will be 2x + y steps.` — Correct and essential insight. This is the key observation that reduces the problem from exponential path search to a geometric constraint. In an interview, state this upfront as the first thing you write on the board — it's the "aha" that unlocks the problem.
+
+- `# I can compute with each window, what's the max result i can get with it as leftmost position. O(max(pos)) this is infinite.` — Good instinct to think about windows, but correctly identified that iterating over all positions is unbounded. This shows you caught a pitfall early rather than coding a wrong approach.
+
+- `# to improve time complexity, we can only look at positions where fruits are available.` — This is the pivot to the correct approach. In an interview, phrase it as: *"The fruit array is sparse and sorted, so I only need to consider fruit positions as window boundaries."*
+
+- `# my problem with previous approach is that there is no O(1) access` — This is the crux of the `while` vs `for` / index vs position debate. You initially thought about using actual positions as pointers (commented-out `lowerBound = fruits[0][0]`), which would make random-access expensive. The realization that array *indices* give O(1) access to both position and count is what makes the sliding window work.
+
+- `# we should look at the first one on the left. Then with O(n) find its rightmost point. Then after each iteration, we move the left one to the next one. We know the rightmost one cannot be any more towards the left` — This is the monotonicity argument that proves the two-pointer approach is O(n). In an interview, say exactly this: *"The right pointer never moves left because expanding the left boundary can only allow the right boundary to go further right."* This is the sentence interviewers want to hear.
+
+- Commented-out lines `# lowerBound = fruits[0][0]` → `lowerBound = 0` — Shows you initially confused index vs position, then corrected. **Guidance**: when designing two-pointer solutions, decide upfront what your pointers represent and write it down. Here, both pointers are *indices into the fruit array*, and you derive positions via `fruits[i][0]`. Keeping that separation clear from the start avoids false starts.
+
+---
+
+### Interview style notes
+
+- **`while` vs `for` for two pointers**: Use `while` when the right pointer persists across left-pointer iterations (as here — `upperBound` never resets). Use `for` for the outer pointer when every element is visited exactly once. Your choice of `while` for both is correct but a `for lowerBound in range(len(fruits))` outer loop would be more idiomatic and signal "I visit each left boundary exactly once."
+- **Index vs position**: The commented-out `fruits[0][0]` lines show an initial attempt to use raw positions as pointers. Always use array indices for pointers and derive positions when needed — this guarantees O(1) access and avoids off-by-one confusion with gaps between positions.
+- **Unused variable**: `pos, fruitNum = fruits[lowerBound]` unpacks but neither is used after. Remove dead code in interviews — it signals unfinished thinking.
+- **Helper naming**: `lessThanKSteps` is descriptive but `is_reachable(left_pos, right_pos, k, start)` reads more naturally as a boolean predicate.
+- **Three-case helper**: The `lessThanKSteps` method handles all-right, all-left, and turn cases cleanly. In an interview, briefly state the three cases before coding them — it shows structured thinking.
