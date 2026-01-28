@@ -92,6 +92,16 @@ class Solution:
 
 ---
 
+### 2411 — Thought process review
+
+The inline comments in the original submission reveal the reasoning:
+
+- `# for initial round, start at max and shrink. then proceedingly, remove prev and check if any went from non-zero to zero, in that case, expand to right` — This captures the core two-pointer invariant correctly: start with the full suffix, shrink to minimal, then as `left` advances, expand `right` only when the window loses a required bit. The insight is solid, but the implementation splits into two branches (`left == 0` vs else) rather than encoding this as one unified loop. In an interview, state this invariant explicitly upfront: *"I maintain a window where every bit in the global OR is still represented."*
+- `# print("left", left, ans, maxCountAtIndex)` / `# print("right:", right, countAtIndex)` — Debug prints suggest the shrink-then-expand logic was tricky to get right. This is a sign the state tracking (`countAtIndex` vs `maxCountAtIndex` vs `numsInBits`) has too many moving parts. The sweep-line approach (tracking `last[bit]`) sidesteps this entirely — no add/remove, no debug prints needed.
+- The `canBeRemoved` check (`d[i] < 2`) is a clever way to ask "is this element the *only* contributor of some bit?" — but it's non-obvious at a glance. In an interview, prefer naming it `is_sole_contributor` or just comment the invariant: "safe to remove if every bit it contributes still has another source in the window."
+
+---
+
 ### Interview style notes
 
 - Avoid `deepcopy` and nested helper functions (`canBeRemoved`, `achievedMax`, `remove`, `add`) — they add cognitive overhead for the interviewer. A single flat loop with a `last[32]` array is easier to follow and debug.

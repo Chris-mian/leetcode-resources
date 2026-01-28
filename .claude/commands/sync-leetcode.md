@@ -103,6 +103,17 @@ For each topic in the problem's topics list, update `leetcode-journal/algos/{top
 
    ---
 
+   ### {number} — Thought process review
+
+   {Analysis of the user's inline comments and debug prints from the submitted code.
+   For each meaningful comment, explain:
+   - What the comment reveals about the user's reasoning
+   - Whether the reasoning was correct or had gaps
+   - How to articulate this reasoning more clearly in an interview setting
+   Also note debug prints as indicators of tricky areas that could be simplified.}
+
+   ---
+
    ### Interview style notes
 
    {analysis of code structure improvements for interview readability}
@@ -114,6 +125,7 @@ For each topic in the problem's topics list, update `leetcode-journal/algos/{top
 **Key learnings formatting rules:**
 - Always rephrase the user's raw notes for better context and readability — be concise yet insightful.
 - Always include an "Interview style notes" section analyzing how the code structure could be improved for interview coding expectations (naming, helper function usage, loop structure, etc.).
+- Always include a "Thought process review" section that analyzes the user's inline comments and debug prints from the submitted code. Comments reflect the user's reasoning — review whether the logic was sound, identify any gaps, and suggest how to articulate the thought process more clearly in an interview.
 
 ### 5. Git Commit and Push
 
